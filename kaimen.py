@@ -29,7 +29,8 @@ class IpTables(object):
         return shell('iptables -A INPUT -p tcp --destination-port %s -j DROP' % self.port)
 
     def allow(self, src_ip):
-        cmd = 'iptables -A INPUT -p tcp -s %s --destination-port %s -j ACCEPT' % (src_ip, self.port)
+        # dont use -A
+        cmd = 'iptables -I INPUT 2 -p tcp -s %s --destination-port %s -j ACCEPT' % (src_ip, self.port)
         print ' [ALLOW] %s -> :%s\n  %s' % (src_ip, self.port, cmd)
         return shell(cmd)
 
