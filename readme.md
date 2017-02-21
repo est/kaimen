@@ -38,3 +38,5 @@ Hide TCP port `2333` but open to IP if `23` bytes of ping were sent `three` time
 ## Future Goals & ToDos ##
 
  - [ ] PF script port knocking 😜
+ - [X] hits by times
+ - [ ] publish to pip
