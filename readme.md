@@ -20,13 +20,13 @@ Simply:
 
 ## Use ##
 
-    sudo python kaimen.py <port> AxB
+    sudo python kaimen.py PORT SIZExTIMES
 
 Parameters
 
-    - `port`: the port you wanna hide
-    - A size of `ping` packet
-    - B how many times of `ping`
+    - `PORT` the port you wanna hide
+    - `SIZE` size of `ping` packet
+    - `TIMES` how many times of `ping`
 
 Example:
 

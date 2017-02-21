@@ -4,6 +4,7 @@
 import sys
 import subprocess
 import socket
+from collections import defaultdict
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
 
@@ -60,15 +61,33 @@ class Listener(object):
 
 
 def daemon():
-    if len(sys.argv) > 1 and sys.argv[1].isdigit():
-        port = int(sys.argv[1])
+    if len(sys.argv) != 2:
+        print 'Usage: ./kaimen.py <PORT> SIZExTIMES'
     else:
-        port = 443
+        port = sys.argv[1]
+        size, times = sys.argv[2].lower().split('x')
+    # check params
+    if port.isdigit() and 0 < int(port) < 65536:
+        port = int(port)
+    else:
+        exit('PORT needs to between 1-65535')
+
+    # check params
+    if size.isdigit() and times.isdigit():
+        size, times = int(size), int(times)
+    else:
+        exit('Bad SIZExTIMES')
+
     l = Listener(port)
+    hits = defaultdict(int)
     for data, addr in l:
         # IP + ICMP header == 28 bytes
-        if len(data) - 28 == 90:
-            l.iptables.allow(addr[0])
+        if len(data) - 28 == size:
+            hits[addr[0]] += 1
+            if hits[addr[0]] > times:
+                l.iptables.allow(addr[0])
+        else:
+            hits.pop(addr[0])
 
 
 if '__main__' == __name__:
