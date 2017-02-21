@@ -23,15 +23,25 @@ class IpTables(object):
         print ' [DROP]', port
         return shell('iptables -A INPUT -p tcp --destination-port %s -j DROP' % port)
 
-    def undrop(self, port):
-        print ' [DROP]', port
-        return shell('iptables -D INPUT -p tcp --destination-port %s -j DROP' % port)
+    def allow(self, sip, dport):
+        print ' [ALLOW] %s -> :%s' % (sip, dport)
+        return shell('iptables -A INPUT -p tcp -s %s --destination-port %s -j DROP' % (sip, dport))
+
+    def disallow(self, sip, dport):
+        print ' [DISALLOW] %s -> :%s' % (sip, dport)
+        return shell('iptables -D INPUT -p tcp -s %s --destination-port %s -j DROP' % (sip, dport))
+
+
+class Listener(object):
+    def __init__(self, timeout=1):
+        pass
 
 
 def listen_forever():
     """yield data, addr"""
     sock.bind(('', 0))
     sock.settimeout(5)
+
     while 1:
         try:
             yield sock.recvfrom(1024)
@@ -44,7 +54,8 @@ def daemon():
     t.drop(444)
     for data, addr in listen_forever():
         print len(data), addr
-        if len(data) - 20 == 90:
+        # IP + ICMP header == 28 bytes
+        if len(data) - 28 == 90:
             t.undrop(444)
 
 
