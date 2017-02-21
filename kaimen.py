@@ -60,7 +60,7 @@ def daemon():
     for data, addr in l:
         # IP + ICMP header == 28 bytes
         if len(data) - 28 == 90:
-            l.iptables.undrop()
+            l.iptables.allow(addr[0])
 
 
 if '__main__' == __name__:
