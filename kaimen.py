@@ -29,12 +29,14 @@ class IpTables(object):
         return shell('iptables -A INPUT -p tcp --destination-port %s -j DROP' % self.port)
 
     def allow(self, src_ip):
-        print ' [ALLOW] %s -> :%s' % (src_ip, self.port)
-        return shell('iptables -A INPUT -p tcp -s %s --destination-port %s -j ACCEPT' % (src_ip, self.port))
+        cmd = 'iptables -A INPUT -p tcp -s %s --destination-port %s -j ACCEPT' % (src_ip, self.port)
+        print ' [ALLOW] %s -> :%s\n  %s' % (src_ip, self.port, cmd)
+        return shell(cmd)
 
     def disallow(self, src_ip):
-        print ' [DISALLOW] %s -> :%s' % (src_ip, self.port)
-        return shell('iptables -D INPUT -p tcp -s %s --destination-port %s -j ACCEPT' % (src_ip, self.port))
+        cmd = 'iptables -D INPUT -p tcp -s %s --destination-port %s -j ACCEPT' % (src_ip, self.port)
+        print ' [DISALLOW] %s -> :%s\n  %s' % (src_ip, self.port, cmd)
+        return shell(cmd)
 
 
 class Listener(object):
