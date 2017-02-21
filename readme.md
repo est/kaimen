@@ -18,6 +18,23 @@ Simply:
     pip install kaimen
 
 
+## Use ##
+
+    sudo python kaimen.py <port> AxB
+
+Parameters
+
+    - `port`: the port you wanna hide
+    - A size of `ping` packet
+    - B how many times of `ping`
+
+Example:
+
+    sudo python kaimen.py 2333 23x3
+
+Hide TCP port `2333` but open to IP if `23` bytes of ping were sent `three` times.
+
+
 ## Future Goals & ToDos ##
 
  - [ ] PF script port knocking 😜
