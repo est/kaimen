@@ -14,49 +14,53 @@ def shell(cmd):
 
 
 class IpTables(object):
-    def __init__(self):
-        # delete then add
+
+    def __init__(self, port):
+        self.port = port
+
+    def keep(self):
+        """keep existing TCP connections open"""
         shell('iptables -D INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
         shell('iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT')
 
-    def drop(self, port):
-        print ' [DROP]', port
-        return shell('iptables -A INPUT -p tcp --destination-port %s -j DROP' % port)
+    def drop(self):
+        print ' [DROP]', self.port
+        return shell('iptables -A INPUT -p tcp --destination-port %s -j DROP' % self.port)
 
-    def allow(self, sip, dport):
-        print ' [ALLOW] %s -> :%s' % (sip, dport)
-        return shell('iptables -A INPUT -p tcp -s %s --destination-port %s -j DROP' % (sip, dport))
+    def allow(self, src_ip):
+        print ' [ALLOW] %s -> :%s' % (src_ip, self.port)
+        return shell('iptables -A INPUT -p tcp -s %s --destination-port %s -j DROP' % (src_ip, self.port))
 
-    def disallow(self, sip, dport):
-        print ' [DISALLOW] %s -> :%s' % (sip, dport)
-        return shell('iptables -D INPUT -p tcp -s %s --destination-port %s -j DROP' % (sip, dport))
+    def disallow(self, src_ip):
+        print ' [DISALLOW] %s -> :%s' % (src_ip, self.port)
+        return shell('iptables -D INPUT -p tcp -s %s --destination-port %s -j DROP' % (src_ip, self.port))
 
 
 class Listener(object):
-    def __init__(self, timeout=1):
-        pass
+    def __init__(self, port, ):
+        self.port = port
+        sock.bind(('', 0))
+        sock.settimeout(1)  # will fire event every 1 seconds
+        self.ticks = 0
+        self.iptables = IpTables(port)
+        self.iptables.drop()
+        self.iptables.keep()
 
-
-def listen_forever():
-    """yield data, addr"""
-    sock.bind(('', 0))
-    sock.settimeout(5)
-
-    while 1:
-        try:
-            yield sock.recvfrom(1024)
-        except:
-            continue
+    def __iter__(self):
+        while 1:
+            try:
+                yield sock.recvfrom(1024)
+            except:
+                self.ticks += 1
+                continue
 
 
 def daemon():
-    t = IpTables()
-    t.drop(444)
-    for data, addr in listen_forever():
-        print len(data), addr
+    l = Listener(4444)
+    for data, addr in l:
         # IP + ICMP header == 28 bytes
         if len(data) - 28 == 90:
-            t.undrop(444)
+            l.iptables.undrop()
 
 
 if '__main__' == __name__:
