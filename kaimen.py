@@ -47,8 +47,8 @@ class Listener(object):
         sock.settimeout(1)  # will fire event every 1 seconds
         self.ticks = 0
         self.iptables = IpTables(port)
-        self.iptables.drop()
         self.iptables.keep()
+        self.iptables.drop()
 
     def __iter__(self):
         while 1:
