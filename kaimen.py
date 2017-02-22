@@ -83,7 +83,7 @@ def daemon():
     hits = defaultdict(int)
     for data, addr in l:
         # IP + ICMP header == 28 bytes
-        print '[PING]', addr[0], len(data) - 20
+        print '[PING]', addr[0], len(data) - 28
         if len(data) - 28 == size:
             hits[addr[0]] += 1
             if hits[addr[0]] > times:
