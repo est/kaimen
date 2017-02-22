@@ -40,3 +40,4 @@ Hide TCP port `2333` but open to IP if `23` bytes of ping were sent `three` time
  - [ ] PF script port knocking 😜
  - [X] hits by times
  - [ ] publish to pip
+ - [ ] port knocking over DNS. YEAH!
