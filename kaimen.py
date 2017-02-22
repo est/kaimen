@@ -61,8 +61,9 @@ class Listener(object):
 
 
 def daemon():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print 'Usage: ./kaimen.py <PORT> SIZExTIMES'
+        exit(0)
     else:
         port = sys.argv[1]
         size, times = sys.argv[2].lower().split('x')
