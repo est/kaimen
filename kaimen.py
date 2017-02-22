@@ -89,7 +89,7 @@ def daemon():
             if hits[addr[0]] > times:
                 l.iptables.allow(addr[0])
         else:
-            hits.pop(addr[0])
+            hits.pop(addr[0], None)
 
 
 if '__main__' == __name__:
